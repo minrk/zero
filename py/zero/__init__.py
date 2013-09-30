@@ -437,9 +437,10 @@ class Zero(object):
         self.setup.debug('Sending %s to %s', msg, self.setup.point)
         sleep(self.naptime)  # TODO: Find out how to tell when it is connected
         self.naptime = 0
-        tracker = self.sock.send(msg, copy=False, track=True)
-        if self.setup.block:
-            tracker.wait()
+        flags = 0
+        if not self.setup.block:
+            flags |= zmq.NOBLOCK
+        self.sock.send(msg, flags)
 
     @property
     def active(self):
